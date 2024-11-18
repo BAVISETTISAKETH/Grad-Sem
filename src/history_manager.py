@@ -1,4 +1,3 @@
-# src/history_manager.py
 import json
 import os
 
@@ -8,7 +7,7 @@ def save_insight(insight_entry):
     """Save an insight to the insights history file."""
     if not os.path.exists(INSIGHTS_FILE):
         with open(INSIGHTS_FILE, 'w') as f:
-            json.dump([], f)  # Create an empty list if file doesn't exist
+            json.dump([], f)
 
     with open(INSIGHTS_FILE, 'r+') as f:
         insights = json.load(f)
