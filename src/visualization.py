@@ -1,20 +1,24 @@
+# src/visualization.py
 import matplotlib.pyplot as plt
 import os
 from datetime import datetime
+from src.config import VISUALS_DIR
 
-def create_visualization(data, column_x, column_y, title):
-    """Create and save a simple line plot visualization."""
-    plt.figure()
-    plt.plot(data[column_x], data[column_y], marker='o')
+def create_visualization(data, columns, title):
+    """Create a visualization for the given columns."""
+    os.makedirs(VISUALS_DIR, exist_ok=True)
+    plt.figure(figsize=(10, 6))
+    if len(columns) == 2:
+        plt.scatter(data[columns[0]], data[columns[1]])
+        plt.xlabel(columns[0])
+        plt.ylabel(columns[1])
+    else:
+        plt.plot(data[columns[0]])
+        plt.xlabel(columns[0])
+        plt.ylabel("Values")
+
     plt.title(title)
-    plt.xlabel(column_x)
-    plt.ylabel(column_y)
-
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"history/visuals/{title}_{timestamp}.png"
-    plt.savefig(filename)
+    visual_path = os.path.join(VISUALS_DIR, f"{title}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+    plt.savefig(visual_path)
     plt.close()
-    
-    print(f"Visualization saved as {filename}")
-    return filename  
+    return visual_path

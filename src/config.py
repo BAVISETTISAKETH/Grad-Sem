@@ -1,3 +1,4 @@
 # src/config.py
-# Replace with your actual OpenAI API key
-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
+MODEL_NAME = "bigscience/bloom-560m"
+INSIGHTS_FILE = "history/insights.json"
+VISUALS_DIR = "history/visuals/"

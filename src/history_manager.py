@@ -1,27 +1,27 @@
+# src/history_manager.py
 import json
 import os
-
-INSIGHTS_FILE = "history/insights.json"
+from src.config import INSIGHTS_FILE
 
 def save_insight(insight_entry):
-    """Save an insight to the insights history file."""
-    if not os.path.exists(INSIGHTS_FILE):
-        with open(INSIGHTS_FILE, 'w') as f:
-            json.dump([], f)
+    """Save an insight to the insights file."""
+    os.makedirs(os.path.dirname(INSIGHTS_FILE), exist_ok=True)
+    try:
+        with open(INSIGHTS_FILE, "r") as f:
+            insights = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        insights = []
 
-    with open(INSIGHTS_FILE, 'r+') as f:
-        insights = json.load(f)
-        insights.append(insight_entry)
-        f.seek(0)
+    insights.append(insight_entry)
+
+    with open(INSIGHTS_FILE, "w") as f:
         json.dump(insights, f, indent=4)
-
-    print("Insight saved to history.")
+    print("Insight saved.")
 
 def load_insights():
-    """Load all insights from the insights history file."""
-    if os.path.exists(INSIGHTS_FILE):
-        with open(INSIGHTS_FILE, 'r') as f:
+    """Load historical insights."""
+    try:
+        with open(INSIGHTS_FILE, "r") as f:
             return json.load(f)
-    else:
-        print("No insights history found.")
+    except (FileNotFoundError, json.JSONDecodeError):
         return []

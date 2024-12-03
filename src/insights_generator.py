@@ -1,26 +1,23 @@
-import openai
-import json
-from datetime import datetime
+# src/insights_generator.py
+from src.llm_handler import generate_response
 
-openai.api_key = "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"
-
-def generate_insight_from_visualization(visual_path, description):
-    """Generate insight based on the visualization using an LLM."""
-   
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Generate insights for the visualization: {description}.",
-        max_tokens=50
+def generate_insight_from_visualization(visual_path, title):
+    """Generate insight based on visualization."""
+    prompt = (
+        f"Given the visualization titled '{title}' saved at {visual_path}, "
+        "provide meaningful insights about the data trends and patterns."
     )
-    insight_text = response.choices[0].text.strip()
-
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    insight_entry = {
-        "visualization_path": visual_path,
-        "description": description,
-        "insight": insight_text,
-        "timestamp": timestamp
-    }
-    
-    print(f"Generated insight: {insight_text}")
-    return insight_entry
+    try:
+        response = generate_response(prompt)
+        if response is None:
+            raise ValueError("Model returned no response.")
+        return {
+            "insight": response.strip(),
+            "visualization_path": visual_path,
+        }
+    except Exception as e:
+        print(f"Failed to generate insight: {e}")
+        return {
+            "insight": "No insight available due to an error.",
+            "visualization_path": visual_path,
+        }
